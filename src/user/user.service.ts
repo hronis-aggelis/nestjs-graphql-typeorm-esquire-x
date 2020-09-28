@@ -96,36 +96,50 @@ export class UserService {
     }
   }
 
-  async updateUser(data: UpdateUserInput, currentUser: User): Promise<User> {
-    await this.userRepository.update(currentUser.userId, {
+  async updateUser(data: UpdateUserInput, user: User): Promise<Boolean> {
+    const result = await this.userRepository.update(user.userId, {
       ...data,
       modifiedDate: new Date().toISOString(),
     });
 
-    const user = await this.userRepository.findOne(currentUser.userId);
-
-    if (user) {
-      return user;
+    if (result.affected > 0) {
+      //if (user) {
+      return true;
     } else {
-      throw new InternalServerErrorException('Could not update User Info!!');
+      throw new InternalServerErrorException('Could not update User!!');
     }
+
+    // const user = await this.userRepository.findOne(currentUser.userId);
+
+    // if (user) {
+    //   return user;
+    // } else {
+    //   throw new InternalServerErrorException('Could not update User Info!!');
+    // }
   }
 
-  async deleteUser(currentUser: User): Promise<User> {
-    const user = await this.userRepository.findOne(currentUser.userId);
-
-    if (user) {
-      const result = await this.userRepository.delete(currentUser.userId);
-      //const result = await this.userRepository.remove(user);
-      if (result.affected > 0) {
-        //if (user) {
-        return user;
-      } else {
-        throw new InternalServerErrorException('Could not delete User!!');
-      }
+  async deleteUser(user: User): Promise<Boolean> {
+    //const user = await this.userRepository.findOne(currentUser.userId);
+    const result = await this.userRepository.delete(user.userId);
+    if (result.affected > 0) {
+      //if (user) {
+      return true;
     } else {
       throw new InternalServerErrorException('Could not delete User!!');
     }
+
+    // if (user) {
+    //   const result = await this.userRepository.delete(currentUser.userId);
+    //   //const result = await this.userRepository.remove(user);
+    //   if (result.affected > 0) {
+    //     //if (user) {
+    //     return user;
+    //   } else {
+    //     throw new InternalServerErrorException('Could not delete User!!');
+    //   }
+    // } else {
+    //   throw new InternalServerErrorException('Could not delete User!!');
+    // }
   }
 
   async freelancer(user: User): Promise<Freelancer> {
@@ -152,10 +166,13 @@ export class UserService {
   }
 
   async user(freelancer: Freelancer): Promise<User> {
-    return this.userRepository.findOne(freelancer.userUserId);
+    return this.userRepository.findOne(
+      //freelancer.userUserId
+      freelancer.user.userId,
+    );
   }
 
   async userEmployer(employer: Employer): Promise<User> {
-    return this.userRepository.findOne(employer.userEmployerUserId);
+    return this.userRepository.findOne(employer.userEmployer.userId);
   }
 }

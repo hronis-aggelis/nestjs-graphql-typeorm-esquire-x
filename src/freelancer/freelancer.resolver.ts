@@ -18,6 +18,7 @@ import { CurrentUser } from '../user/custom-decorators/user.decorator';
 import { User } from '../user/user.entity';
 import { ExperienceLevelValidationPipe } from './pipes/freelancerExperienceLevelValidation.pipe';
 import { Category } from 'src/category/category.entity';
+import { UpdateFreelancerInput } from './dto/freelancer-update.input';
 
 @Resolver(of => FreelancerType)
 export class FreelancerResolver {
@@ -53,9 +54,18 @@ export class FreelancerResolver {
     return this.freelancerService.createFreelancer(data, user);
   }
 
-  @Mutation(returns => FreelancerType)
+  @Mutation(returns => Boolean)
   @UseGuards(GqlAuthGuard)
-  async deleteFreelancer(@CurrentUser() user: User): Promise<Freelancer> {
+  async updateFreelancer(
+    @Args('data') data: UpdateFreelancerInput,
+    @CurrentUser() user: User,
+  ): Promise<Boolean> {
+    return this.freelancerService.updateFreelancer(data, user);
+  }
+
+  @Mutation(returns => Boolean)
+  @UseGuards(GqlAuthGuard)
+  async deleteFreelancer(@CurrentUser() user: User): Promise<Boolean> {
     return this.freelancerService.deleteFreelancer(user);
   }
 

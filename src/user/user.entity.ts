@@ -59,10 +59,10 @@ export class User {
 
   // @OneToOne(
   //   type => Freelancer,
-  //   //freelancer => freelancer.user,
+  //   freelancer => freelancer.freelancerId,
   //   { onDelete: 'CASCADE' },
   // )
-  // @JoinColumn()
+  // @JoinColumn({ name: 'freelancerFreelancerId' })
   // freelancer: Freelancer;
 
   // @OneToOne(

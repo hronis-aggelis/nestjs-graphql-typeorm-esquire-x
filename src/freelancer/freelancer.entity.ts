@@ -57,9 +57,9 @@ export class Freelancer {
   @OneToOne(
     type => User,
     user => user.userId,
-    { cascade: true, onDelete: 'CASCADE' },
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
-  @JoinColumn()
+  @JoinColumn({ name: 'userUserId' })
   user: User;
 
   // @OneToOne(
@@ -69,14 +69,16 @@ export class Freelancer {
   // )
   // user: User;
 
-  @Column({ nullable: true })
-  userUserId: string;
+  // @Column({ nullable: true })
+  // userUserId: string;
 
   @ManyToMany(
     type => Employer,
     employer => employer.employerSavedFreelancers,
     {
       cascade: true,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     },
   )
   @JoinTable()

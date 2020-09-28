@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { FreelancerModule } from './freelancer/freelancer.module';
 import { Freelancer } from './freelancer/freelancer.entity';
-import { typeOrmConfig } from './config/typeorm.config';
+import * as typeOrmConfig from './config/typeorm.config';
 import { CategoryModule } from './category/category.module';
 import { EmployerModule } from './employer/employer.module';
 

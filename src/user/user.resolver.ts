@@ -56,18 +56,18 @@ export class UserResolver {
     return this.userService.createUser(data);
   }
 
-  @Mutation(returns => UserType)
+  @Mutation(returns => Boolean)
   @UseGuards(GqlAuthGuard)
   async updateUser(
     @Args('data') data: UpdateUserInput,
     @CurrentUser() user: User,
-  ): Promise<User> {
+  ): Promise<Boolean> {
     return this.userService.updateUser(data, user);
   }
 
-  @Mutation(returns => UserType)
+  @Mutation(returns => Boolean)
   @UseGuards(GqlAuthGuard)
-  async deleteUser(@CurrentUser() user: User): Promise<User> {
+  async deleteUser(@CurrentUser() user: User): Promise<Boolean> {
     return this.userService.deleteUser(user);
   }
 

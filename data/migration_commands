@@ -1,0 +1,2 @@
+npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/config/typeorm.config.ts migration:run
+npx typeorm migration:create -n Users -d src/db/migrations

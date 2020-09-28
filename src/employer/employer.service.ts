@@ -43,7 +43,8 @@ export class EmployerService {
       employerId: await uuid(),
       modifiedDate: new Date().toISOString(),
       createdDate: new Date().toISOString(),
-      userEmployerUserId: user.userId,
+      userEmployer: user,
+      //userEmployerUserId: user.userId,
     };
     const result = this.employerRepository.create(employer);
     result.employerSavedFreelancers = data.employerSavedFreelancers;
@@ -53,12 +54,22 @@ export class EmployerService {
     return result;
   }
 
-  async deleteEmployer(user: User): Promise<Employer> {
-    const employer = await this.employerRepository.findOne({
-      userEmployerUserId: user.userId,
-    });
-    await this.employerRepository.delete({ userEmployerUserId: user.userId });
-    return employer;
+  async deleteEmployer(user: User): Promise<Boolean> {
+    // const employer = await this.employerRepository.findOne({
+    //   //userEmployerUserId: user.userId,
+    //   userEmployer: user,
+    // });
+    //await this.employerRepository.remove(employer);
+    const result = await this.employerRepository.delete({ userEmployer: user });
+    if (result.affected > 0) {
+      //if (user) {
+      return true;
+    } else {
+      throw new InternalServerErrorException('Could not delete User!!');
+    }
+
+    //await this.employerRepository.delete({ employerId: employer.employerId });
+    //return employer;
   }
 
   async userEmployer(employer: Employer): Promise<User> {
@@ -66,25 +77,39 @@ export class EmployerService {
   }
 
   async employer(user: User): Promise<Employer> {
-    return this.employerRepository.findOne({ userEmployerUserId: user.userId });
+    return this.employerRepository.findOne({ userEmployer: user });
   }
 
   async assignEmployerSavedFreelancersToEmployer(
+    user: User,
     data: AssignEmployerSavedFreelancersToEmployer,
   ): Promise<Employer> {
-    const { employerId, freelancersId } = data;
-    const result = await this.employerRepository.findOne({ employerId });
-    if (result.employerSavedFreelancers) {
+    const { freelancersId } = data;
+    //const result = await this.employerRepository.findOne({ employerId });
+    const result = await this.employerRepository.findOne({
+      userEmployer: user,
+    });
+
+    if (
+      Array.isArray(result.employerSavedFreelancers) &&
+      result.employerSavedFreelancers.length
+    ) {
       result.employerSavedFreelancers = [
-        ...new Set(...result.employerSavedFreelancers, ...freelancersId),
+        ...new Set([...result.employerSavedFreelancers, ...freelancersId]),
       ];
     } else {
       result.employerSavedFreelancers = freelancersId;
     }
-    return this.employerRepository.save(result);
+
+    const assign = await this.employerRepository.save(result);
+
+    await this.freelancerService.getManyFreelancers2(freelancersId, result);
+
+    return assign;
   }
 
   async employerSavedFreelancers(employer: Employer): Promise<Freelancer[]> {
+    // return employer.employerSavedFreelancers
     return this.freelancerService.getManyFreelancers(
       employer.employerSavedFreelancers,
     );

@@ -35,22 +35,27 @@ export class EmployerResolver {
     return this.employerService.createEmployer(data, user);
   }
 
+  @Mutation(returns => Boolean)
+  @UseGuards(GqlAuthGuard)
+  async deleteEmployer(@CurrentUser() user: User): Promise<Boolean> {
+    return this.employerService.deleteEmployer(user);
+  }
+
   @Mutation(returns => EmployerType)
   @UseGuards(GqlAuthGuard)
-  async deleteEmployer(@CurrentUser() user: User): Promise<Employer> {
-    return this.employerService.deleteEmployer(user);
+  async assignEmployerSavedFreelancersToEmployer(
+    @CurrentUser() user: User,
+    @Args('data') data: AssignEmployerSavedFreelancersToEmployer,
+  ): Promise<Employer> {
+    return this.employerService.assignEmployerSavedFreelancersToEmployer(
+      user,
+      data,
+    );
   }
 
   @ResolveField()
   async userEmployer(@Parent() employer: Employer): Promise<User> {
     return this.employerService.userEmployer(employer);
-  }
-
-  @Mutation(returns => EmployerType)
-  async assignEmployerSavedFreelancersToEmployer(
-    @Args('data') data: AssignEmployerSavedFreelancersToEmployer,
-  ): Promise<Employer> {
-    return this.employerService.assignEmployerSavedFreelancersToEmployer(data);
   }
 
   @ResolveField()
