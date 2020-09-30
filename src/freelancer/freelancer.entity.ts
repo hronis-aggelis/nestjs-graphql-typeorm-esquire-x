@@ -76,11 +76,11 @@ export class Freelancer {
     type => Employer,
     employer => employer.employerSavedFreelancers,
     {
-      cascade: true,
+      //cascade: true,
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     },
   )
   @JoinTable()
-  SavedByThoseEmployers: Employer[];
+  savedByThoseEmployers: Employer[];
 }

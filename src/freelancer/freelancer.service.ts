@@ -74,48 +74,18 @@ export class FreelancerService {
   async deleteFreelancer(user: User): Promise<Boolean> {
     const result = await this.freelancerRepository.delete({ user });
     if (result.affected > 0) {
-      //if (user) {
       return true;
     } else {
       throw new InternalServerErrorException('Could not delete Freelancer!!');
     }
-    // const freelancer = await this.freelancerRepository.findOne({
-    //   //userUserId: user.userId,
-    //   user,
-    // });
-    // await this.freelancerRepository.remove(freelancer);
-    // //await this.freelancerRepository.delete({ userUserId: user.userId });
-    // return freelancer;
-    // const users = await this.userRepository.find({ relations: ['freelancer'] });
-
-    // const currentUser = users.filter(
-    //   currentUser => currentUser.userId === user.userId,
-    // )[0];
-
-    // await this.freelancerRepository.delete(currentUser.freelancer.freelancerId);
-
-    // return currentUser.freelancer;
   }
 
   async user(freelancer: Freelancer): Promise<User> {
-    //   const freelancers = await this.freelancerRepository.find({
-    //     relations: ['User']})
-    //   const currentFreelancer = freelancers.filter(
-    //   currentFreelancer => currentFreelancer.user === freelancer.,
-    // )[0];
-    //console.log(freelancer.user);
     return this.userService.user(freelancer);
-    //return this.userRepository.findOne(freelancer.userUserId);
-
-    // return this.userRepository.findOne({
-    //   freelancer, //freelancerId: freelancer.freelancerId.,
-    //});
-    //return this.userRepository.findOne({ userId: freelancer.userId }); //freelancer.userId });
   }
 
   async freelancer(user: User): Promise<Freelancer> {
     return this.freelancerRepository.findOne({
-      //userUserId: user.userId
       user,
     });
   }
@@ -130,28 +100,36 @@ export class FreelancerService {
     }
   }
 
-  async getManyFreelancers2(
-    freelancersId: string[],
-    employer: Employer,
-  ): Promise<Boolean> {
-    const freelancers = await this.freelancerRepository.findByIds(
-      freelancersId,
+  // async assignEmployerToFreelancers(
+  //   freelancersId: string[],
+  //   employer: Employer,
+  // ): Promise<Boolean> {
+  //   const freelancers = await this.freelancerRepository.findByIds(
+  //     freelancersId,
+  //   );
+
+  //   freelancers.map(freelancer =>
+  //     Array.isArray(freelancer.savedByThoseEmployers) &&
+  //     freelancer.savedByThoseEmployers.length
+  //       ? (freelancer.savedByThoseEmployers = [
+  //           ...freelancer.savedByThoseEmployers,
+  //           employer,
+  //         ])
+  //       : (freelancer.savedByThoseEmployers = [employer]),
+  //   );
+
+  //   await freelancers.map(freelancer =>
+  //     this.freelancerRepository.save(freelancer),
+  //   );
+
+  //   return true;
+  // }
+
+  async savedByThoseEmployers(freelancer: Freelancer): Promise<Employer[]> {
+    const freelancerWithEmployers = await this.freelancerRepository.findOne(
+      freelancer.freelancerId,
+      { relations: ['savedByThoseEmployers'] },
     );
-    await freelancers.map(freelancer =>
-      Array.isArray(freelancer.SavedByThoseEmployers) &&
-      freelancer.SavedByThoseEmployers.length
-        ? (freelancer.SavedByThoseEmployers = [
-            ...freelancer.SavedByThoseEmployers,
-            employer,
-          ])
-        : (freelancer.SavedByThoseEmployers = [employer]),
-    );
-    await freelancers.map(freelancer =>
-      this.freelancerRepository.save(freelancer),
-    );
-    return true;
-    // if (freelancersId) {
-    //   return this.freelancerRepository.findByIds(freelancersId);
-    // }
+    return freelancerWithEmployers.savedByThoseEmployers;
   }
 }

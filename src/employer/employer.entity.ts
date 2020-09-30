@@ -23,14 +23,14 @@ export class Employer {
   // employerSavedFreelancers?: string[];
   @ManyToMany(
     type => Freelancer,
-    freelancer => freelancer.SavedByThoseEmployers,
+    freelancer => freelancer.savedByThoseEmployers,
     {
-      //cascade: true,
+      cascade: true,
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     },
   )
-  employerSavedFreelancers: string[];
+  employerSavedFreelancers: Freelancer[];
 
   @Column({ nullable: true })
   slug: string;
@@ -51,17 +51,4 @@ export class Employer {
   )
   @JoinColumn({ name: 'userUserId' })
   userEmployer: User;
-
-  // @Column()
-  // userEmployerUserId: string;
-
-  // @ManyToMany(
-  //   type => Freelancer,
-  //   employer => employer.employerSavedFreelancers,
-  //   {
-  //     cascade: true,
-  //   },
-  // )
-  // @JoinTable()
-  // SavedByThoseEmployers: Employer[];
 }

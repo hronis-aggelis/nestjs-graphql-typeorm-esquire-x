@@ -34,6 +34,15 @@ export class EmployerService {
     return this.employerRepository.find();
   }
 
+  async getEmployerById(user: User): Promise<Employer> {
+    return this.employerRepository.findOne(
+      {
+        userEmployer: user,
+      },
+      //{ relations: ['employerSavedFreelancers'] },
+    );
+  }
+
   async createEmployer(
     data: CreateEmployerInput,
     user: User,
@@ -44,10 +53,9 @@ export class EmployerService {
       modifiedDate: new Date().toISOString(),
       createdDate: new Date().toISOString(),
       userEmployer: user,
-      //userEmployerUserId: user.userId,
     };
+
     const result = this.employerRepository.create(employer);
-    result.employerSavedFreelancers = data.employerSavedFreelancers;
 
     await this.employerRepository.save(result);
 
@@ -55,21 +63,12 @@ export class EmployerService {
   }
 
   async deleteEmployer(user: User): Promise<Boolean> {
-    // const employer = await this.employerRepository.findOne({
-    //   //userEmployerUserId: user.userId,
-    //   userEmployer: user,
-    // });
-    //await this.employerRepository.remove(employer);
     const result = await this.employerRepository.delete({ userEmployer: user });
     if (result.affected > 0) {
-      //if (user) {
       return true;
     } else {
       throw new InternalServerErrorException('Could not delete User!!');
     }
-
-    //await this.employerRepository.delete({ employerId: employer.employerId });
-    //return employer;
   }
 
   async userEmployer(employer: Employer): Promise<User> {
@@ -85,33 +84,46 @@ export class EmployerService {
     data: AssignEmployerSavedFreelancersToEmployer,
   ): Promise<Employer> {
     const { freelancersId } = data;
-    //const result = await this.employerRepository.findOne({ employerId });
-    const result = await this.employerRepository.findOne({
-      userEmployer: user,
-    });
+    //const employer = await this.getEmployerById(user);
+    const employer = await this.employerRepository.findOne(
+      {
+        userEmployer: user,
+      },
+      { relations: ['employerSavedFreelancers'] },
+    );
+    console.log(employer);
+    const freelancers = await this.freelancerService.getManyFreelancers(
+      freelancersId,
+    );
 
+    //needs checking, an valw cascade true mallon to call sto assignEmployerToFreelancers einai axristo
     if (
-      Array.isArray(result.employerSavedFreelancers) &&
-      result.employerSavedFreelancers.length
+      Array.isArray(employer.employerSavedFreelancers) &&
+      employer.employerSavedFreelancers.length
     ) {
-      result.employerSavedFreelancers = [
-        ...new Set([...result.employerSavedFreelancers, ...freelancersId]),
+      employer.employerSavedFreelancers = [
+        ...new Set([...employer.employerSavedFreelancers, ...freelancers]),
       ];
     } else {
-      result.employerSavedFreelancers = freelancersId;
+      employer.employerSavedFreelancers = freelancers;
     }
 
-    const assign = await this.employerRepository.save(result);
+    const assign = await this.employerRepository.save(employer);
 
-    await this.freelancerService.getManyFreelancers2(freelancersId, result);
+    // await this.freelancerService.assignEmployerToFreelancers(
+    //   freelancersId,
+    //   employer,
+    // );
 
     return assign;
   }
 
-  async employerSavedFreelancers(employer: Employer): Promise<Freelancer[]> {
-    // return employer.employerSavedFreelancers
-    return this.freelancerService.getManyFreelancers(
-      employer.employerSavedFreelancers,
-    );
-  }
+  // async employerSavedFreelancers(employer: Employer): Promise<Freelancer[]> {
+  //   const employerWithFreelancers = await this.employerRepository.findOne(
+  //     employer.employerId,
+  //     { relations: ['employerSavedFreelancers'] },
+  //   );
+
+  //   return employerWithFreelancers.employerSavedFreelancers;
+  // }
 }

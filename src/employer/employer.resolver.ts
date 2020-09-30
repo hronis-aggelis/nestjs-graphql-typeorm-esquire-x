@@ -5,6 +5,8 @@ import {
   Args,
   ResolveField,
   Parent,
+  ResolveProperty,
+  Context,
 } from '@nestjs/graphql';
 import { UseGuards, UsePipes } from '@nestjs/common';
 import { GqlAuthGuard } from '../user/auth-jwt-utils/auth.guard';
@@ -16,6 +18,7 @@ import { EmployerService } from './employer.service';
 import { Freelancer } from '../freelancer/freelancer.entity';
 import { CreateEmployerInput } from './dto/employer.input';
 import { AssignEmployerSavedFreelancersToEmployer } from './dto/assign-employerSavedFreelancersToEmployer.input';
+import { IGraphQLContext } from '../types/graphql.types';
 
 @Resolver(of => EmployerType)
 export class EmployerResolver {
@@ -58,18 +61,18 @@ export class EmployerResolver {
     return this.employerService.userEmployer(employer);
   }
 
+  // @ResolveField()
+  // async employerSavedFreelancers(
+  //   @Parent() employer: Employer,
+  // ): Promise<Freelancer[]> {
+  //   return this.employerService.employerSavedFreelancers(employer);
+  // }
+
   @ResolveField()
   async employerSavedFreelancers(
     @Parent() employer: Employer,
+    @Context() { freelancersEmployerLoader }: IGraphQLContext,
   ): Promise<Freelancer[]> {
-    return this.employerService.employerSavedFreelancers(employer);
-    //   const result = lesson.students;
-    //   return this.studentRepository.find({
-    //     where: {
-    //       id: {
-    //         $in: result,
-    //       },
-    //     },
-    //   });
+    return freelancersEmployerLoader.load(employer.employerId);
   }
 }

@@ -8,6 +8,7 @@ import { Freelancer } from './freelancer/freelancer.entity';
 import * as typeOrmConfig from './config/typeorm.config';
 import { CategoryModule } from './category/category.module';
 import { EmployerModule } from './employer/employer.module';
+import { freelancersEmployerLoader } from './db/loaders/freelancers.loader';
 
 @Module({
   imports: [
@@ -23,7 +24,16 @@ import { EmployerModule } from './employer/employer.module';
     ),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
-      context: ({ req }) => ({ req }),
+      //context: ({ req }) => ({ req }),
+      //[
+      context: ({ req }) => ({
+        req,
+        freelancersEmployerLoader: freelancersEmployerLoader(),
+      }),
+      //() => ({
+      //freelancersEmployerLoader: freelancersEmployerLoader()})
+      //]
+      //{ freelancersEmployerLoader: freelancersEmployerLoader() },
     }),
     UserModule,
     FreelancerModule,

@@ -13,7 +13,7 @@ export class EmployerType {
   userEmployer: User;
 
   @Field(type => [FreelancerType], { nullable: true })
-  employerSavedFreelancers: string[];
+  employerSavedFreelancers: Freelancer[];
 
   slug?: string;
   modifiedDate: string;

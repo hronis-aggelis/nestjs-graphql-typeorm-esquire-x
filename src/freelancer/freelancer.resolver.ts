@@ -7,8 +7,6 @@ import {
   Parent,
 } from '@nestjs/graphql';
 import { UseGuards, UsePipes } from '@nestjs/common';
-// import { GqlAuthGuard } from './auth-jwt-utils/auth.guard';
-// import { CurrentUser } from './custom-decorators/user.decorator';
 import { FreelancerType } from './models/freelancer.model';
 import { FreelancerService } from './freelancer.service';
 import { Freelancer } from './freelancer.entity';
@@ -19,27 +17,12 @@ import { User } from '../user/user.entity';
 import { ExperienceLevelValidationPipe } from './pipes/freelancerExperienceLevelValidation.pipe';
 import { Category } from 'src/category/category.entity';
 import { UpdateFreelancerInput } from './dto/freelancer-update.input';
+import { Employer } from '../employer/employer.entity';
 
 @Resolver(of => FreelancerType)
 export class FreelancerResolver {
   constructor(private freelancerService: FreelancerService) {}
-  //constructor(private userService: UserService) {}
-  // @Query(returns => [UserType])
-  // getUsers(): Promise<User[]> {
-  //   return this.userService.getUsers();
-  // }
-  // @Query(returns => UserType)
-  // @UseGuards(GqlAuthGuard)
-  // async getMyProfile(@CurrentUser() user: User): Promise<User> {
-  //   return this.userService.getMyProfile(user);
-  // }
-  // @Query(returns => TokenType)
-  // async signIn(
-  //   @Args('email') email: string,
-  //   @Args('password') password: string,
-  // ): Promise<{ accessToken }> {
-  //   return this.userService.signIn(email, password);
-  // }
+
   @Query(returns => [FreelancerType])
   async getFreelancers(): Promise<Freelancer[]> {
     return this.freelancerService.getFreelancers();
@@ -77,5 +60,12 @@ export class FreelancerResolver {
   @ResolveField()
   async categories(@Parent() freelancer: Freelancer): Promise<Category[]> {
     return this.freelancerService.categories(freelancer);
+  }
+
+  @ResolveField()
+  async savedByThoseEmployers(
+    @Parent() freelancer: Freelancer,
+  ): Promise<Employer[]> {
+    return this.freelancerService.savedByThoseEmployers(freelancer);
   }
 }
