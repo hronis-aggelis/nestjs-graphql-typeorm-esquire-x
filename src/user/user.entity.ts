@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Freelancer } from '../freelancer/freelancer.entity';
 import { Exclude } from 'class-transformer';
+import { Employer } from '../employer/employer.entity';
 
 @Entity('users')
 @Unique(['email'])
@@ -56,6 +57,12 @@ export class User {
 
   @Column()
   createdDate: string;
+
+  @OneToOne(
+    type => Employer,
+    employer => employer.employerId,
+  )
+  employer: Employer;
 
   // @OneToOne(
   //   type => Freelancer,

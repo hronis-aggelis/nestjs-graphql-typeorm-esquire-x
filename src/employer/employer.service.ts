@@ -71,9 +71,9 @@ export class EmployerService {
     }
   }
 
-  async userEmployer(employer: Employer): Promise<User> {
-    return this.userService.userEmployer(employer);
-  }
+  // async userEmployer(employer: Employer): Promise<User> {
+  //   return this.userService.userEmployer(employer);
+  // }
 
   async employer(user: User): Promise<Employer> {
     return this.employerRepository.findOne({ userEmployer: user });

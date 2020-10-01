@@ -9,6 +9,8 @@ import * as typeOrmConfig from './config/typeorm.config';
 import { CategoryModule } from './category/category.module';
 import { EmployerModule } from './employer/employer.module';
 import { freelancersEmployerLoader } from './db/loaders/freelancers.loader';
+import { userEmployerLoader } from './db/loaders/userInEmployer.loader';
+import { JobModule } from './job/job.module';
 
 @Module({
   imports: [
@@ -29,6 +31,7 @@ import { freelancersEmployerLoader } from './db/loaders/freelancers.loader';
       context: ({ req }) => ({
         req,
         freelancersEmployerLoader: freelancersEmployerLoader(),
+        userEmployerLoader: userEmployerLoader(),
       }),
       //() => ({
       //freelancersEmployerLoader: freelancersEmployerLoader()})
@@ -39,6 +42,7 @@ import { freelancersEmployerLoader } from './db/loaders/freelancers.loader';
     FreelancerModule,
     CategoryModule,
     EmployerModule,
+    JobModule,
   ],
   controllers: [],
   providers: [],

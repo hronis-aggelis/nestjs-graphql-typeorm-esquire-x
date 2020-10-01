@@ -44,10 +44,7 @@ export class Employer {
   @OneToOne(
     type => User,
     user => user.userId,
-    {
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    },
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn({ name: 'userUserId' })
   userEmployer: User;
