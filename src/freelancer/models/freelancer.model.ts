@@ -12,6 +12,8 @@ import { Category } from '../../category/category.entity';
 import { CategoryType } from '../../category/models/category.model';
 import { Employer } from '../../employer/employer.entity';
 import { EmployerType } from '../../employer/models/employer.model';
+import { JobOfferType } from '../../job-offer/models/job-offer.model';
+import { JobOffer } from '../../job-offer/job-offer.entity';
 
 @ObjectType('Freelancer')
 export class FreelancerType {
@@ -29,6 +31,9 @@ export class FreelancerType {
 
   @Field(type => [EmployerType], { nullable: 'itemsAndList' })
   savedByThoseEmployers: Employer[];
+
+  @Field(type => [JobOfferType], { nullable: true })
+  jobOfferFreelancer: JobOffer[];
 
   freelancerAvailability: Availability; //enum
   freelancerExperienceLevel: ExperienceLevel;

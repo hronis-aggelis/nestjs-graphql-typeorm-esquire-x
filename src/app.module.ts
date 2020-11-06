@@ -11,6 +11,8 @@ import { EmployerModule } from './employer/employer.module';
 import { freelancersEmployerLoader } from './db/loaders/freelancers.loader';
 import { userEmployerLoader } from './db/loaders/userInEmployer.loader';
 import { JobModule } from './job/job.module';
+import { jobEmployerLoader } from './db/loaders/jobInEmployer.loader';
+import { JobOfferModule } from './job-offer/job-offer.module';
 
 @Module({
   imports: [
@@ -26,13 +28,29 @@ import { JobModule } from './job/job.module';
     ),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
+      installSubscriptionHandlers: true,
       //context: ({ req }) => ({ req }),
       //[
-      context: ({ req }) => ({
-        req,
-        freelancersEmployerLoader: freelancersEmployerLoader(),
-        userEmployerLoader: userEmployerLoader(),
-      }),
+      context: ({ req, connection }) =>
+        connection
+          ? {
+              req: {
+                headers: {
+                  authorization: connection.context['Authorization']
+                    ? connection.context['Authorization']
+                    : connection.context['authorization'],
+                },
+              },
+              freelancersEmployerLoader: freelancersEmployerLoader(),
+              userEmployerLoader: userEmployerLoader(),
+              jobEmployerLoader: jobEmployerLoader(),
+            }
+          : {
+              req,
+              freelancersEmployerLoader: freelancersEmployerLoader(),
+              userEmployerLoader: userEmployerLoader(),
+              jobEmployerLoader: jobEmployerLoader(),
+            },
       //() => ({
       //freelancersEmployerLoader: freelancersEmployerLoader()})
       //]
@@ -43,6 +61,7 @@ import { JobModule } from './job/job.module';
     CategoryModule,
     EmployerModule,
     JobModule,
+    JobOfferModule,
   ],
   controllers: [],
   providers: [],

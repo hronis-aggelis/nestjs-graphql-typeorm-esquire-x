@@ -19,14 +19,13 @@ import { Freelancer } from '../freelancer/freelancer.entity';
 import { CreateEmployerInput } from './dto/employer.input';
 import { AssignEmployerSavedFreelancersToEmployer } from './dto/assign-employerSavedFreelancersToEmployer.input';
 import { IGraphQLContext } from '../types/graphql.types';
-import { CurrentEmployer } from '../user/custom-decorators/employer.decorator';
+import { Job } from '../job/job.entity';
 
 @Resolver(of => EmployerType)
 export class EmployerResolver {
   constructor(private employerService: EmployerService) {}
 
   @Query(returns => [EmployerType])
-  @UseGuards(GqlAuthGuard)
   async getEmployers(): Promise<Employer[]> {
     return this.employerService.getEmployers();
   }
@@ -68,6 +67,14 @@ export class EmployerResolver {
     @Context() { userEmployerLoader }: IGraphQLContext,
   ): Promise<User> {
     return userEmployerLoader.load(employer.employerId);
+  }
+
+  @ResolveField()
+  async jobEmployer(
+    @Parent() employer: Employer,
+    @Context() { jobEmployerLoader }: IGraphQLContext,
+  ): Promise<Job[]> {
+    return jobEmployerLoader.load(employer.employerId);
   }
 
   // @ResolveField()

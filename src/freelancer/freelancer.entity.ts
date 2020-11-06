@@ -9,10 +9,12 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { ExperienceLevel } from './enums/freelancer.enum';
 import { User } from '../user/user.entity';
 import { Employer } from '../employer/employer.entity';
+import { JobOffer } from '../job-offer/job-offer.entity';
 
 @Entity('freelancers')
 export class Freelancer {
@@ -56,8 +58,8 @@ export class Freelancer {
 
   @OneToOne(
     type => User,
-    user => user.userId,
-    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+    user => user.freelancer,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }, //cascade: true,
   )
   @JoinColumn({ name: 'userUserId' })
   user: User;
@@ -83,4 +85,11 @@ export class Freelancer {
   )
   @JoinTable()
   savedByThoseEmployers: Employer[];
+
+  @OneToMany(
+    type => JobOffer,
+    jobOffer => jobOffer.freelancerJobOffer,
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+  )
+  jobOfferFreelancer: JobOffer[];
 }

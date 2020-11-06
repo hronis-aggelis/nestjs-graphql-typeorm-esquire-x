@@ -6,7 +6,7 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
-import { UseGuards, UsePipes } from '@nestjs/common';
+import { UseGuards, UsePipes, Inject, forwardRef } from '@nestjs/common';
 import { FreelancerType } from './models/freelancer.model';
 import { FreelancerService } from './freelancer.service';
 import { Freelancer } from './freelancer.entity';
@@ -18,10 +18,16 @@ import { ExperienceLevelValidationPipe } from './pipes/freelancerExperienceLevel
 import { Category } from 'src/category/category.entity';
 import { UpdateFreelancerInput } from './dto/freelancer-update.input';
 import { Employer } from '../employer/employer.entity';
+import { JobOffer } from '../job-offer/job-offer.entity';
+import { JobOfferService } from '../job-offer/job-offer.service';
 
 @Resolver(of => FreelancerType)
 export class FreelancerResolver {
-  constructor(private freelancerService: FreelancerService) {}
+  constructor(
+    private freelancerService: FreelancerService,
+    @Inject(forwardRef(() => JobOfferService))
+    private jobOfferService: JobOfferService,
+  ) {}
 
   @Query(returns => [FreelancerType])
   async getFreelancers(): Promise<Freelancer[]> {
@@ -67,5 +73,12 @@ export class FreelancerResolver {
     @Parent() freelancer: Freelancer,
   ): Promise<Employer[]> {
     return this.freelancerService.savedByThoseEmployers(freelancer);
+  }
+
+  @ResolveField()
+  async jobOfferFreelancer(
+    @Parent() freelancer: Freelancer,
+  ): Promise<JobOffer[]> {
+    return this.jobOfferService.getJobOfferByFreelancerId(freelancer);
   }
 }

@@ -17,14 +17,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: { email }): Promise<User> {
-    const user = await this.userRepository.findOne({
-      email: email.email,
-    });
+    const user = await this.userRepository.findOne(
+      {
+        email: email.email,
+      },
+      { relations: ['employer', 'freelancer'] },
+    );
 
     if (!user) {
       throw new UnauthorizedException();
     }
-
     return user;
   }
 }

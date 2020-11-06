@@ -63,7 +63,14 @@ export class EmployerService {
   }
 
   async deleteEmployer(user: User): Promise<Boolean> {
-    const result = await this.employerRepository.delete({ userEmployer: user });
+    const result = await this.employerRepository.delete(
+      { userEmployer: user }, //user.employer.employerId,
+    );
+    //const resulta = await this.employerRepository.findOne({userEmployer: user}, {relations: ['userEmployer']})
+    // const result = await this.employerRepository.remove(
+    //   (user as unknown) as Employer,
+    // );
+    // return true;
     if (result.affected > 0) {
       return true;
     } else {

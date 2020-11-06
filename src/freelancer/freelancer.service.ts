@@ -5,6 +5,7 @@ import {
   ConflictException,
   Inject,
   forwardRef,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Freelancer } from './freelancer.entity';
@@ -28,6 +29,15 @@ export class FreelancerService {
     @Inject(forwardRef(() => UserService)) private userService: UserService,
     private categoryService: CategoryService,
   ) {}
+
+  async getFreelancerById(id: string): Promise<Freelancer> {
+    const freelancer = await this.freelancerRepository.findOne(id);
+    if (!freelancer) {
+      throw new NotFoundException('Freelancer not found!!');
+    }
+
+    return freelancer;
+  }
 
   async getFreelancers(): Promise<Freelancer[]> {
     return this.freelancerRepository.find();

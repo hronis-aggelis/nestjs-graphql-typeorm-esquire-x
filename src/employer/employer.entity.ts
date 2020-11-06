@@ -13,6 +13,8 @@ import {
 } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Freelancer } from '../freelancer/freelancer.entity';
+import { Job } from '../job/job.entity';
+import { JobOffer } from '../job-offer/job-offer.entity';
 
 @Entity('employers')
 export class Employer {
@@ -43,9 +45,23 @@ export class Employer {
 
   @OneToOne(
     type => User,
-    user => user.userId,
-    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+    user => user.employer,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' }, //cascade: true,},
   )
   @JoinColumn({ name: 'userUserId' })
   userEmployer: User;
+
+  @OneToMany(
+    type => Job,
+    job => job.employerJob,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+  )
+  jobEmployer: Job[];
+
+  @OneToMany(
+    type => JobOffer,
+    jobOffer => jobOffer.employerJobOffer,
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+  )
+  jobOfferEmployer: JobOffer[];
 }

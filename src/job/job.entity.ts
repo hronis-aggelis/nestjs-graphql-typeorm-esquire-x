@@ -1,5 +1,14 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { User } from '../user/user.entity';
+import { Employer } from '../employer/employer.entity';
+import { JobOffer } from '../job-offer/job-offer.entity';
 
 @Entity('jobs')
 export class Job {
@@ -54,7 +63,7 @@ export class Job {
   @Column()
   jobProjectLength: string; //enum
 
-  @Column()
+  @Column({ nullable: true })
   slug: string;
 
   @Column()
@@ -64,9 +73,17 @@ export class Job {
   createdDate: string;
 
   @ManyToOne(
-    type => User,
-    user => user.userId,
+    type => Employer,
+    employer => employer.jobEmployer,
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn()
-  userJob: User;
+  employerJob: Employer;
+
+  @OneToMany(
+    type => JobOffer,
+    jobOffer => jobOffer.jobJobOffer,
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: true },
+  )
+  jobOfferJob: JobOffer[];
 }

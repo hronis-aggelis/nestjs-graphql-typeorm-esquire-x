@@ -1,5 +1,9 @@
 import { ObjectType, ID, Field, Float } from '@nestjs/graphql';
 import { User } from '../../user/user.entity';
+import { Employer } from '../../employer/employer.entity';
+import { EmployerType } from '../../employer/models/employer.model';
+import { JobOfferType } from '../../job-offer/models/job-offer.model';
+import { JobOffer } from '../../job-offer/job-offer.entity';
 
 @ObjectType('Job')
 export class JobType {
@@ -12,8 +16,8 @@ export class JobType {
   @Field(type => Float)
   jobBudget: number;
 
-  // @Field(type => User)
-  // userJob: User;
+  @Field(type => EmployerType)
+  employerJob: Employer;
 
   freelancerRated: boolean;
   jobCompleted: boolean;
@@ -22,7 +26,13 @@ export class JobType {
   jobDescription: string;
   jobExperienceLevel: string; //enum
   jobFreelancerCoverLetter?: string;
+
+  @Field(type => Float, { nullable: true })
   jobHoursPerWeek?: number; //enum
+
+  @Field(type => [JobOfferType], { nullable: 'itemsAndList' })
+  jobOfferJob: JobOffer[];
+
   jobNew: boolean;
   jobRated: boolean;
   jobStartDate: string; //date
