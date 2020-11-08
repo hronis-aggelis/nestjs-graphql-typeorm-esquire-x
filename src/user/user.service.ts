@@ -166,9 +166,13 @@ export class UserService {
   }
 
   async user(freelancer: Freelancer): Promise<User> {
+    //console.log(freelancer)
+    //console.log(freelancer);
     return this.userRepository.findOne(
       //freelancer.userUserId
-      freelancer.user.userId,
+      //freelancer.user.userId,
+      { freelancer: freelancer },
+      { relations: ['freelancer'] },
     );
   }
 

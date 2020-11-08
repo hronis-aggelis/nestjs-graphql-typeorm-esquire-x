@@ -5,6 +5,7 @@ import {
   Args,
   ResolveField,
   Parent,
+  Context,
 } from '@nestjs/graphql';
 import { UseGuards, UsePipes, Inject, forwardRef } from '@nestjs/common';
 import { FreelancerType } from './models/freelancer.model';
@@ -20,6 +21,8 @@ import { UpdateFreelancerInput } from './dto/freelancer-update.input';
 import { Employer } from '../employer/employer.entity';
 import { JobOffer } from '../job-offer/job-offer.entity';
 import { JobOfferService } from '../job-offer/job-offer.service';
+import { IGraphQLContext } from '../types/graphql.types';
+import { userFreelancerLoader } from '../db/loaders/userInFreelancer.loader';
 
 @Resolver(of => FreelancerType)
 export class FreelancerResolver {
@@ -59,8 +62,12 @@ export class FreelancerResolver {
   }
 
   @ResolveField()
-  async user(@Parent() freelancer: Freelancer): Promise<User> {
-    return this.freelancerService.user(freelancer);
+  async user(
+    @Parent() freelancer: Freelancer,
+    @Context() { userFreelancerLoader }: IGraphQLContext,
+  ): Promise<User> {
+    return userFreelancerLoader.load(freelancer.freelancerId);
+    //return this.freelancerService.user(freelancer);
   }
 
   @ResolveField()

@@ -12,6 +12,7 @@ import { freelancersEmployerLoader } from './db/loaders/freelancers.loader';
 import { userEmployerLoader } from './db/loaders/userInEmployer.loader';
 import { JobModule } from './job/job.module';
 import { jobEmployerLoader } from './db/loaders/jobInEmployer.loader';
+import { userFreelancerLoader } from './db/loaders/userInFreelancer.loader';
 import { JobOfferModule } from './job-offer/job-offer.module';
 
 @Module({
@@ -44,12 +45,14 @@ import { JobOfferModule } from './job-offer/job-offer.module';
               freelancersEmployerLoader: freelancersEmployerLoader(),
               userEmployerLoader: userEmployerLoader(),
               jobEmployerLoader: jobEmployerLoader(),
+              userFreelancerLoader: userFreelancerLoader(),
             }
           : {
               req,
               freelancersEmployerLoader: freelancersEmployerLoader(),
               userEmployerLoader: userEmployerLoader(),
               jobEmployerLoader: jobEmployerLoader(),
+              userFreelancerLoader: userFreelancerLoader(),
             },
       //() => ({
       //freelancersEmployerLoader: freelancersEmployerLoader()})
