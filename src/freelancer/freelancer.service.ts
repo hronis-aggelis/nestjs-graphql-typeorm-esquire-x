@@ -20,6 +20,7 @@ import { CategoryService } from '../category/category.service';
 import { UserService } from '../user/user.service';
 import { FreelancerRepository } from './freelancer.repository';
 import { Employer } from '../employer/employer.entity';
+import { Job } from '../job/job.entity';
 
 @Injectable()
 export class FreelancerService {
@@ -31,7 +32,9 @@ export class FreelancerService {
   ) {}
 
   async getFreelancerById(id: string): Promise<Freelancer> {
-    const freelancer = await this.freelancerRepository.findOne(id);
+    const freelancer = await this.freelancerRepository.findOne(id, {
+      relations: ['jobFreelancer'],
+    });
     if (!freelancer) {
       throw new NotFoundException('Freelancer not found!!');
     }
@@ -141,5 +144,15 @@ export class FreelancerService {
       { relations: ['savedByThoseEmployers'] },
     );
     return freelancerWithEmployers.savedByThoseEmployers;
+  }
+
+  async jobFreelancer(freelancer: Freelancer): Promise<Job[]> {
+    //return this.jobService.getJobByFreelancerId(freelancer);
+    const fullFreelancer = await this.freelancerRepository.findOne(
+      freelancer.freelancerId,
+      { relations: ['jobFreelancer'] },
+    );
+
+    return fullFreelancer.jobFreelancer;
   }
 }

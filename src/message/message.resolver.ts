@@ -47,7 +47,6 @@ export class MessageResolver {
 
   @ResolveField()
   async chat(@Parent() message: Message): Promise<Chat> {
-    // return this.chatService.getChatByMessage(message);
     return this.messageService.chat(message);
   }
 

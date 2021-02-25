@@ -11,6 +11,8 @@ import { Job } from './job.entity';
 import { v4 as uuid } from 'uuid';
 import { UpdateJobInput } from './dto/job-update.input';
 import { Employer } from '../employer/employer.entity';
+import { Freelancer } from '../freelancer/freelancer.entity';
+import { JobOffer } from '../job-offer/job-offer.entity';
 
 @Injectable()
 export class JobService {
@@ -96,4 +98,27 @@ export class JobService {
       throw new InternalServerErrorException('Could not delete Job!!');
     }
   }
+
+  async freelancerJob(job: Job): Promise<Freelancer> {
+    const fullJob = await this.jobRepository.findOne(job.jobId, {
+      relations: ['freelancerJob'],
+    });
+
+    return fullJob.freelancerJob;
+  }
+
+  async jobOfferJob(job: Job): Promise<JobOffer[]> {
+    const fullJob = await this.jobRepository.findOne(job.jobId, {
+      relations: ['jobOfferJob'],
+    });
+
+    return fullJob.jobOfferJob;
+  }
+
+  // async getJobByFreelancerId(freelancer: Freelancer): Promise<Job[]> {
+  //   return this.jobRepository.find(
+  //     { freelancerJob: freelancer },
+  //     { relations: ['freelancerJob'] },
+  //   );
+  // }
 }

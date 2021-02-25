@@ -40,7 +40,7 @@ export class ChatService {
     //   where: { conversationParties: [messageFrom, messageTo] },
     // });
     return this.chatRepository.findOne({
-      where: [{ userA: messageFrom }, { userB: messageTo }],
+      where: { userA: messageFrom, userB: messageTo },
     });
   }
 
@@ -49,6 +49,12 @@ export class ChatService {
       relations: ['chatMessages'],
     });
     return fullChat.chatMessages;
+  }
+
+  async getChats(user: User): Promise<Chat[]> {
+    return this.chatRepository.find({
+      where: [{ userA: user }, { userB: user }],
+    });
   }
 
   // async getChatByMessage(message: Message) {

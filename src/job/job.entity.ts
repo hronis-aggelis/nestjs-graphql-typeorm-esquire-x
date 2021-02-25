@@ -9,6 +9,7 @@ import {
 import { User } from '../user/user.entity';
 import { Employer } from '../employer/employer.entity';
 import { JobOffer } from '../job-offer/job-offer.entity';
+import { Freelancer } from '../freelancer/freelancer.entity';
 
 @Entity('jobs')
 export class Job {
@@ -83,7 +84,15 @@ export class Job {
   @OneToMany(
     type => JobOffer,
     jobOffer => jobOffer.jobJobOffer,
-    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: true },
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: true },
   )
   jobOfferJob: JobOffer[];
+
+  @ManyToOne(
+    type => Freelancer,
+    freelancer => freelancer.jobFreelancer,
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: true },
+  )
+  @JoinColumn()
+  freelancerJob?: Freelancer;
 }

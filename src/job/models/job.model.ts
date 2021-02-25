@@ -4,6 +4,8 @@ import { Employer } from '../../employer/employer.entity';
 import { EmployerType } from '../../employer/models/employer.model';
 import { JobOfferType } from '../../job-offer/models/job-offer.model';
 import { JobOffer } from '../../job-offer/job-offer.entity';
+import { Freelancer } from '../../freelancer/freelancer.entity';
+import { FreelancerType } from '../../freelancer/models/freelancer.model';
 
 @ObjectType('Job')
 export class JobType {
@@ -32,6 +34,9 @@ export class JobType {
 
   @Field(type => [JobOfferType], { nullable: 'itemsAndList' })
   jobOfferJob: JobOffer[];
+
+  @Field(type => FreelancerType, { nullable: true })
+  freelancerJob?: Freelancer;
 
   jobNew: boolean;
   jobRated: boolean;

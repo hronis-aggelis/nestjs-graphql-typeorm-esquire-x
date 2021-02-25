@@ -15,6 +15,7 @@ import { ExperienceLevel } from './enums/freelancer.enum';
 import { User } from '../user/user.entity';
 import { Employer } from '../employer/employer.entity';
 import { JobOffer } from '../job-offer/job-offer.entity';
+import { Job } from '../job/job.entity';
 
 @Entity('freelancers')
 export class Freelancer {
@@ -89,7 +90,14 @@ export class Freelancer {
   @OneToMany(
     type => JobOffer,
     jobOffer => jobOffer.freelancerJobOffer,
-    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: true },
   )
-  jobOfferFreelancer: JobOffer[];
+  jobOfferFreelancer?: JobOffer[];
+
+  @OneToMany(
+    type => Job,
+    job => job.freelancerJob,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: true },
+  )
+  jobFreelancer?: Job[];
 }

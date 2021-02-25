@@ -1,4 +1,11 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import {
+  Resolver,
+  Mutation,
+  Args,
+  Query,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { JobType } from './models/job.model';
 import { JobService } from './job.service';
 import { CreateJobInput } from './dto/job.input';
@@ -9,10 +16,18 @@ import { User } from '../user/user.entity';
 import { Job } from './job.entity';
 import { UpdateJobInput } from './dto/job-update.input';
 import { Employer } from '../employer/employer.entity';
+import { Freelancer } from '../freelancer/freelancer.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FreelancerRepository } from '../freelancer/freelancer.repository';
+import { JobOffer } from '../job-offer/job-offer.entity';
 
 @Resolver(of => JobType)
 export class JobResolver {
-  constructor(private jobService: JobService) {}
+  constructor(
+    private jobService: JobService,
+    @InjectRepository(FreelancerRepository)
+    private freelancerRepository: FreelancerRepository,
+  ) {}
 
   @Query(returns => [JobType])
   async getJobs(): Promise<Job[]> {
@@ -45,5 +60,15 @@ export class JobResolver {
     @Args('jobId') jobId: string,
   ): Promise<Boolean> {
     return this.jobService.deleteJob(user, jobId);
+  }
+
+  @ResolveField()
+  async freelancerJob(@Parent() job: Job): Promise<Freelancer> {
+    return this.jobService.freelancerJob(job);
+  }
+
+  @ResolveField()
+  async jobOfferJob(@Parent() job: Job): Promise<JobOffer[]> {
+    return this.jobService.jobOfferJob(job);
   }
 }

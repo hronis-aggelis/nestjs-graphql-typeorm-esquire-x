@@ -70,7 +70,10 @@ export class MessageService {
       { relations: ['messageFrom', 'messageTo'] },
     );
     //console.log(fullMessage);
-    return this.chatService.getChat(fullMessage.messageFrom, message.messageTo);
+    return this.chatService.getChat(
+      fullMessage.messageFrom,
+      fullMessage.messageTo,
+    );
   }
 
   async getMessages(user: User): Promise<Message[]> {

@@ -23,6 +23,8 @@ import { JobOffer } from '../job-offer/job-offer.entity';
 import { JobOfferService } from '../job-offer/job-offer.service';
 import { IGraphQLContext } from '../types/graphql.types';
 import { userFreelancerLoader } from '../db/loaders/userInFreelancer.loader';
+import { JobService } from '../job/job.service';
+import { Job } from '../job/job.entity';
 
 @Resolver(of => FreelancerType)
 export class FreelancerResolver {
@@ -30,6 +32,7 @@ export class FreelancerResolver {
     private freelancerService: FreelancerService,
     @Inject(forwardRef(() => JobOfferService))
     private jobOfferService: JobOfferService,
+    private jobService: JobService,
   ) {}
 
   @Query(returns => [FreelancerType])
@@ -87,5 +90,11 @@ export class FreelancerResolver {
     @Parent() freelancer: Freelancer,
   ): Promise<JobOffer[]> {
     return this.jobOfferService.getJobOfferByFreelancerId(freelancer);
+  }
+
+  @ResolveField()
+  async jobFreelancer(@Parent() freelancer: Freelancer): Promise<Job[]> {
+    //return this.jobService.getJobByFreelancerId(freelancer);
+    return this.freelancerService.jobFreelancer(freelancer);
   }
 }

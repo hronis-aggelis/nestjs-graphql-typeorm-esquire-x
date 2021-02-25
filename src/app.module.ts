@@ -16,6 +16,7 @@ import { userFreelancerLoader } from './db/loaders/userInFreelancer.loader';
 import { JobOfferModule } from './job-offer/job-offer.module';
 import { ChatModule } from './chat/chat.module';
 import { MessageModule } from './message/message.module';
+import { ProposalModule } from './proposal/proposal.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { MessageModule } from './message/message.module';
     JobOfferModule,
     ChatModule,
     MessageModule,
+    ProposalModule,
   ],
   controllers: [],
   providers: [],

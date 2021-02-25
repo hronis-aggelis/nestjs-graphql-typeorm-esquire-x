@@ -55,7 +55,7 @@ export class JobOffer {
   @ManyToOne(
     type => Job,
     job => job.jobOfferJob,
-    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+    { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   jobJobOffer: Job;
 

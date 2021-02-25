@@ -18,7 +18,7 @@ import { EmployerModule } from '../employer/employer.module';
     TypeOrmModule.forFeature([UserRepository]),
     JwtModule.register({
       secret: 'topsecret51',
-      signOptions: { expiresIn: 3600 },
+      signOptions: { expiresIn: 86400 },
     }),
   ],
   providers: [UserResolver, UserService, JwtStrategy],

@@ -9,12 +9,14 @@ import { Category } from 'src/category/category.entity';
 import { CategoryModule } from '../category/category.module';
 import { FreelancerRepository } from './freelancer.repository';
 import { JobOfferModule } from '../job-offer/job-offer.module';
+import { JobModule } from '../job/job.module';
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
     TypeOrmModule.forFeature([FreelancerRepository]),
     CategoryModule,
+    JobModule,
     forwardRef(() => JobOfferModule),
   ],
   providers: [FreelancerResolver, FreelancerService],
